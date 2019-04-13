@@ -72,6 +72,7 @@ syntax on
 
 set nowrap
 
+set cursorline
 set hlsearch
 set ignorecase
 set smartcase
@@ -221,17 +222,17 @@ au FileType unite inoremap <silent> <buffer> <ESC><ESC> <ESC>:q<CR>
 " jedi-vimの設定＋neocomplete.vimの連携
 """"""""""""""""""""""""""""""
 " docstringを表示しない
-autocmd FileType python setlocal completeopt-=preview
-autocmd FileType python setlocal omnifunc=jedi#completions
-let g:jedi#completions_enabled = 0
-let g:jedi#auto_vim_configuration = 0
-
-if !exists('g:neocomplete#force_omni_input_patterns')
-        let g:neocomplete#force_omni_input_patterns = {}
-endif
+" autocmd FileType python setlocal completeopt-=preview
+" autocmd FileType python setlocal omnifunc=jedi#completions
+" let g:jedi#completions_enabled = 0
+" let g:jedi#auto_vim_configuration = 0
+"
+" if !exists('g:neocomplete#force_omni_input_patterns')
+"         let g:neocomplete#force_omni_input_patterns = {}
+" endif
 
 " let g:neocomplete#force_omni_input_patterns.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
-let g:neocomplete#force_omni_input_patterns.python = '\h\w*\|[^. \t]\.\w*'
+" let g:neocomplete#force_omni_input_patterns.python = '\h\w*\|[^. \t]\.\w*'
 """"""""""""""""""""""""""""""
 
 " http://inari.hatenablog.com/entry/2014/05/05/231307
@@ -316,9 +317,18 @@ inoremap [<Enter> []<Left><CR><ESC><S-o>
 inoremap (<Enter> ()<Left><CR><ESC><S-o>
 """"""""""""""""""""""""""""""
 
-" ノーマルモードでセミコロンを押したときに、文末にセミコロンを入力してインサートモードに
+
+" ノーマルモード時のみセミコロンとコロンを入れ替える(USキーボード用の設定)
 """"""""""""""""""""""""""""""
-nnoremap ; $a;
+nnoremap ; :
+nnoremap : ;
+
+""""""""""""""""""""""""""""""
+
+" ノーマルモードでセミコロンを押したときに、文末にセミコロンを入力
+""""""""""""""""""""""""""""""
+" nnoremap ; $a;<ESC>
+"
 """"""""""""""""""""""""""""""
 
 " filetypeの自動検出(最後の方に書いた方がいいらしい)
