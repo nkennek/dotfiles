@@ -286,6 +286,16 @@ function! s:GetHighlight(hi)
   let hl = substitute(hl, 'xxx', '', '')
   return hl
 endfunction
+
+" see a diff between the currently edited file and its unmodified version in the filesystem
+function! s:DiffWithSaved()
+  let filetype=&ft
+  diffthis
+  vnew | r # | normal! 1Gdd
+  diffthis
+  exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
+endfunction
+com! Diff call s:DiffWithSaved()
 """"""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
@@ -317,6 +327,31 @@ inoremap [<Enter> []<Left><CR><ESC><S-o>
 inoremap (<Enter> ()<Left><CR><ESC><S-o>
 """"""""""""""""""""""""""""""
 
+" 括弧・文字列の開き記号を削除した時、隣接した閉じ記号を削除する
+""""""""""""""""""""""""""""""
+function! DeleteParenthesesAdjoin()
+    let pos = col(".") - 1 " カーソルの位置
+    let rowchars = getline(".") " カーソル行の文字列
+    let parentLList = ["(", "[", "{", "\'", "\""]
+    let parentRList = [")", "]", "}", "\'", "\""]
+    let cnt = 0
+    let output = ""
+
+    if pos == strlen(rowchars)
+        return "\b"
+    endif
+    for c in parentLList
+        if rowchars[pos-1] == c && rowchars[pos] == parentRList[cnt]
+            call cursor(line("."), pos + 2)
+            let output = "\b"
+            break
+        endif
+        let cnt += 1
+    endfor
+    return output."\b"
+endfunction
+
+inoremap <silent> <BS> <C-R>=DeleteParenthesesAdjoin()<CR>
 
 " ノーマルモード時のみセミコロンとコロンを入れ替える(USキーボード用の設定)
 """"""""""""""""""""""""""""""
@@ -333,3 +368,4 @@ nnoremap : ;
 
 " filetypeの自動検出(最後の方に書いた方がいいらしい)
 filetype on
+
